@@ -7,15 +7,16 @@
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    .chat-box { max-width: 700px; margin: 50px auto; background: #fff; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; height: 60vh; }
+    .chat-box { max-width: 700px; margin: 50px auto; background: #fff; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; height: 65vh; }
     #chat-content { flex: 1; padding: 20px; overflow-y: auto; background: #f9f9f9; display: flex; flex-direction: column; gap: 10px; }
-    .msg { padding: 12px 18px; border-radius: 20px; max-width: 80%; font-size: 15px; line-height: 1.5; }
+    .msg { padding: 12px 18px; border-radius: 20px; max-width: 80%; font-size: 15px; line-height: 1.5; position: relative; }
     .user { background: #007bff; color: white; align-self: flex-end; border-bottom-left-radius: 2px; }
     .ai { background: #e9ecef; color: #333; align-self: flex-start; border-bottom-right-radius: 2px; }
     .input-group { display: flex; padding: 15px; background: white; border-top: 1px solid #eee; }
     #userPrompt { flex: 1; border: 1px solid #ddd; padding: 12px; border-radius: 25px; outline: none; font-family: 'Cairo'; }
     #sendBtn { background: #007bff; color: white; border: none; padding: 10px 25px; border-radius: 25px; margin-right: 10px; cursor: pointer; transition: 0.3s; }
-    #sendBtn:hover { background: #0056b3; }
+    #sendBtn:disabled { background: #ccc; }
+    .loading { font-size: 12px; color: #888; display: none; padding: 0 20px 10px; }
   </style>
 </head>
 <body>
@@ -33,48 +34,64 @@
     <div id="chat-content">
       <div class="msg ai">أهلاً بك يا بطل! أنا مساعدك الذكي. كيف يمكنني دعم صحتك ودراستك اليوم؟</div>
     </div>
+    <div id="loading" class="loading">المساعد الذكي يفكر الآن...</div>
     <div class="input-group">
-      <input type="text" id="userPrompt" placeholder="اسألني أي شيء (نصائح دراسية، تغذية، تنظيم وقت)...">
+      <input type="text" id="userPrompt" placeholder="اسألني أي شيء...">
       <button id="sendBtn" onclick="askAI()">إرسال 🚀</button>
     </div>
   </div>
 
   <script>
     async function askAI() {
-      const API_KEY = "AIzaSyBQEHaj_mJK6DLzH3PbcA1zlv2wBjbrmh8";   
+
+            const API_KEY = "AIzaSyBQEHaj_mJK6DLzH3PbcA1zlv2wBjbrmh8"; 
+      const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+      
       const promptInput = document.getElementById('userPrompt');
       const chatContent = document.getElementById('chat-content');
+      const loading = document.getElementById('loading');
+      const sendBtn = document.getElementById('sendBtn');
       const userText = promptInput.value.trim();
 
       if (!userText) return;
 
-
-          chatContent.innerHTML += `<div class="msg user">${userText}</div>`;
+      chatContent.innerHTML += `<div class="msg user">${userText}</div>`;
       promptInput.value = '';
+      loading.style.display = 'block';
+      sendBtn.disabled = true;
       chatContent.scrollTop = chatContent.scrollHeight;
 
       try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
+        const response = await fetch(url, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            contents: [{ parts: [{ text: `أنت خبير في صحة الطلاب وتطوير الأداء الأكاديمي. أجب باختصار وتشجيع: ${userText}` }] }]
+            contents: [{
+              parts: [{ text: `أنت مساعد ذكي في موقع Smart Student Health. أجب الطالب باختصار وبطريقة مشجعة: ${userText}` }]
+            }]
           })
         });
 
         const data = await response.json();
-        const aiResponse = data.candidates[0].content.parts[0].text;
-
-
-        chatContent.innerHTML += `<div class="msg ai">${aiResponse.replace(/\n/g, '<br>')}</div>`;
-        chatContent.scrollTop = chatContent.scrollHeight;
+        
+        if (data.candidates && data.candidates[0].content) {
+            const aiResponse = data.candidates[0].content.parts[0].text;
+            chatContent.innerHTML += `<div class="msg ai">${aiResponse.replace(/\n/g, '<br>')}</div>`;
+        } else {
+            throw new Error("لم يتمكن الذكاء الاصطناعي من تكوين رد.");
+        }
 
       } catch (error) {
-        chatContent.innerHTML += `<div class="msg ai" style="color:red">حدث خطأ.. تأكد من اتصالك بالإنترنت.</div>`;
+        console.error("Error:", error);
+        chatContent.innerHTML += `<div class="msg ai" style="color:red">عذراً، واجهت مشكلة في الاتصال بمحرك Gemini. تأكد من مفتاح الـ API.</div>`;
+      } finally {
+        loading.style.display = 'none';
+        sendBtn.disabled = false;
+        chatContent.scrollTop = chatContent.scrollHeight;
       }
     }
 
-    document.getElementById('userPrompt').addEventListener('keypress', function (e) {
+    document.getElementById('userPrompt').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') askAI();
     });
   </script>
