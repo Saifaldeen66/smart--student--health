@@ -1,127 +1,314 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>مميزات Smart Student Health</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    .ai-section { background: #f4f7f6; padding: 40px 20px; border-radius: 15px; margin-top: 30px; border: 2px solid #007bff22; }
-    .input-group { margin-bottom: 15px; text-align: right; }
-    .input-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
-    .input-group input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; font-family: 'Cairo', sans-serif; }
-    .btn-ai { background: linear-gradient(135deg, #007bff, #00c6ff); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; width: 100%; }
-    .btn-ai:hover { opacity: 0.9; transform: translateY(-2px); }
-    .btn-ai:disabled { background: #ccc; cursor: not-allowed; }
-    #ai-result { margin-top: 20px; padding: 20px; border-radius: 10px; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: none; line-height: 1.8; }
-    .loading { color: #007bff; font-weight: bold; }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>مميزات Smart Student Health</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* تنسيق عام للصفحة */
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        /* --- 1. تنسيق البطاقات تفاعلية --- */
+        .cards {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.03); /* شفافية Glassmorphism */
+            padding: 30px;
+            width: 300px;
+            border-radius: 20px;
+            transition: all 0.4s ease;
+            cursor: pointer; /* ليشعر المستخدم أنها قابلة للضغط */
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* تأثير التمرير (Hover) على البطاقات */
+        .card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.07);
+            border-color: #00e5ff;
+            box-shadow: 0 15px 30px rgba(0, 229, 255, 0.15);
+        }
+
+        .card img {
+            width: 80px;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            color: #00e5ff;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .card p {
+            font-size: 0.95em;
+            color: #cfd8dc;
+        }
+
+        /* --- 2. تنسيق مختبر التحليل الذكي بألوان جميلة --- */
+        .ai-section {
+            background: rgba(10, 25, 47, 0.8); /* خلفية داكنة متناسقة مع الموقع */
+            backdrop-filter: blur(10px);
+            padding: 40px 25px;
+            border-radius: 20px;
+            margin-top: 30px;
+            border: 1px solid rgba(0, 188, 212, 0.2);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        /* تنسيق العنوان بلون جميل (تدرج لوني أزرق) */
+        .ai-title {
+            background: linear-gradient(90deg, #fff, #00e5ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        /* تنسيق المدخلات */
+        .input-group {
+            margin-bottom: 20px;
+            text-align: right;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: #b0bec5;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            background: rgba(0,0,0,0.2);
+            color: white;
+            font-family: 'Cairo', sans-serif;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #00e5ff;
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+        }
+
+        /* تنسيق زر التحليل الذكي */
+        .btn-ai {
+            background: linear-gradient(135deg, #00bcd4, #00acc1);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 700;
+            transition: 0.4s ease;
+            box-shadow: 0 8px 15px rgba(0, 188, 212, 0.2);
+        }
+
+        .btn-ai:hover {
+            transform: translateY(-3px) scale(1.03);
+            background: linear-gradient(135deg, #00e5ff, #00bcd4);
+            box-shadow: 0 12px 25px rgba(0, 188, 212, 0.4);
+        }
+
+        .btn-ai:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* تنسيق النتيجة بألوان متناسقة وخط جميل */
+        #ai-result {
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: none;
+            line-height: 1.8;
+            text-align: right; /* محاذاة النص لليمين للوضوح */
+            color: #eceff1;
+        }
+
+        /* تنسيق الخطوط الملونة داخل النتيجة (استخدام تدرج خفيف) */
+        .result-highlight {
+            color: #00e5ff;
+            font-weight: 700;
+        }
+
+        .loading {
+            color: #00e5ff;
+            font-weight: 700;
+        }
+    </style>
 </head>
 <body>
-  <header class="navbar">
-    <div class="logo">🩺 Smart Student Health</div>
-    <nav>
-      <a href="index.html">الرئيسية</a>
-      <a href="features.html" class="active">المميزات</a>
-      <a href="ai.html">الذكاء الاصطناعي</a>
-      <a href="contact.html">تواصل معنا</a>
-    </nav>
-  </header>
+    <header class="navbar">
+        <div class="logo">🩺 Smart Student Health</div>
+        <nav>
+            <a href="index.html">الرئيسية</a>
+            <a href="features.html" class="active">المميزات</a>
+            <a href="ai.html">الذكاء الاصطناعي</a>
+            <a href="contact.html">تواصل معنا</a>
+        </nav>
+    </header>
 
-  <section class="page">
-    <h2>✨ مميزات Smart Student Health</h2>
-    <div class="cards">
-      <div class="card">
-        <img src="https://cdn-icons-png.flaticon.com/512/4406/4406263.png" alt="">
-        <h3>تحليل الحالة الصحية</h3>
-        <p>تتبع ذكي لحالتك الجسدية والنفسية مع اقتراحات لتحسين نمط حياتك.</p>
-      </div>
-      <div class="card">
-        <img src="https://cdn-icons-png.flaticon.com/512/3050/3050525.png" alt="">
-        <h3>روبوت استشاري ذكي</h3>
-        <p>روبوت يعتمد على الذكاء الاصطناعي لتقديم دعم فوري وتقليل التوتر.</p>
-      </div>
-      <div class="card">
-        <img src="https://cdn-icons-png.flaticon.com/512/2991/2991112.png" alt="">
-        <h3>لوحة تحكم تفاعلية</h3>
-        <p>تعرض بياناتك الصحية بشكل رسومي دقيق وسهل الفهم.</p>
-      </div>
-    </div>
-
-    <div class="ai-section container">
-        <h3 style="text-align: center; color: #007bff;">🧬 مختبر التحليل والتنبؤ الذكي</h3>
-        <p style="text-align: center; margin-bottom: 25px;">أدخل بياناتك لنقوم بتحليلها ونتوقع أداءك الأكاديمي القادم</p>
-        
-        <div class="input-group">
-            <label>ساعات النوم بالأمس:</label>
-            <input type="number" id="sleepInput" placeholder="مثلاً: 6">
-        </div>
-        
-        <div class="input-group">
-            <label>آخر 3 درجات حصلت عليها (مثلاً: 80, 75, 90):</label>
-            <input type="text" id="gradesInput" placeholder="80, 75, 90">
+    <section class="page container">
+        <div class="page-header">
+            <h2>✨ مميزات Smart Student Health</h2>
         </div>
 
-        <button id="analyzeBtn" onclick="generateAIInsights()" class="btn-ai">ابدأ التحليل الذكي الآن 🚀</button>
-
-        <div id="ai-result">
-            <div id="ai-text"></div>
+        <div class="cards">
+            <div class="card" id="cardHealth">
+                <img src="https://cdn-icons-png.flaticon.com/512/4406/4406263.png" alt="تحليل الحالة الصحية">
+                <h3>تحليل الحالة الصحية</h3>
+                <p>تتبع ذكي لحالتك الجسدية والنفسية مع اقتراحات لتحسين نمط حياتك.</p>
+            </div>
+            <div class="card" id="cardAI">
+                <img src="https://cdn-icons-png.flaticon.com/512/3050/3050525.png" alt="روبوت استشاري ذكي">
+                <h3>روبوت استشاري ذكي</h3>
+                <p>روبوت يعتمد على الذكاء الاصطناعي لتقديم دعم فوري وتقليل التوتر.</p>
+            </div>
+            <div class="card" id="cardDashboard">
+                <img src="https://cdn-icons-png.flaticon.com/512/2991/2991112.png" alt="لوحة تحكم تفاعلية">
+                <h3>لوحة تحكم تفاعلية</h3>
+                <p>تعرض بياناتك الصحية بشكل رسومي دقيق وسهل الفهم.</p>
+            </div>
         </div>
-    </div>
-  </section>
 
-  <script>
-    async function generateAIInsights() {
-        const API_KEY = "AIzaSyBQEHaj_mJK6DLzH3PbcA1zlv2wBjbrmh8"; 
-        const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
-        
-        const sleep = document.getElementById('sleepInput').value;
-        const grades = document.getElementById('gradesInput').value;
-        const resultDiv = document.getElementById('ai-result');
-        const resultText = document.getElementById('ai-text');
-        const analyzeBtn = document.getElementById('analyzeBtn');
+        <div class="ai-section" id="aiLaboratory">
+            <h3 class="ai-title">🧬 مختبر التحليل والتنبؤ الذكي</h3>
+            <p style="text-align: center; margin-bottom: 30px; color: #b0bec5;">أدخل بياناتك لنقوم بتحليلها ونتوقع أداءك الأكاديمي القادم</p>
+            
+            <div class="input-group">
+                <label>ساعات النوم بالأمس:</label>
+                <input type="number" id="sleepInput" placeholder="مثلاً: 6">
+            </div>
+            
+            <div class="input-group">
+                <label>آخر 3 درجات حصلت عليها (مثلاً: 80, 75, 90):</label>
+                <input type="text" id="gradesInput" placeholder="80, 75, 90">
+            </div>
 
-        if(!sleep || !grades) {
-            alert("يرجى إدخال كافة البيانات أولاً");
-            return;
-        }
+            <button id="analyzeBtn" onclick="generateAIInsights()" class="btn-ai">ابدأ التحليل الذكي الآن 🚀</button>
 
-        // تحضير الواجهة للتحميل
-        resultDiv.style.display = "block";
-        resultText.innerHTML = '<p class="loading">⏳ جاري استشارة الذكاء الاصطناعي وتحليل البيانات...</p>';
-        analyzeBtn.disabled = true;
+            <div id="ai-result">
+                <div id="ai-text"></div>
+            </div>
+        </div>
+    </section>
 
-        const promptText = `أنت خبير في الصحة المدرسية والتحليل الأكاديمي. بيانات الطالب هي: ساعات النوم (${sleep}) والدرجات الأخيرة هي (${grades}). بناءً على ذلك قدم باللغة العربية وبأسلوب مشجع: 1- تحليل الحالة الصحية وتأثير النوم على التركيز. 2- التنبؤ بالأداء الدراسي القادم. استخدم نقاط واضحة.`;
-
-        try {
-            const response = await fetch(url, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    contents: [{
-                        parts: [{ text: promptText }]
-                    }]
-                })
+    <script>
+        // التمرير الناعم (Smooth Scroll)
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
             });
+        });
 
-            const data = await response.json();
+        // 1. تفعيل بطاقة "تحليل الحالة الصحية" للتمرير للأسفل
+        document.getElementById('cardHealth').addEventListener('click', function() {
+            document.getElementById('aiLaboratory').scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+
+        // 2. تفعيل بطاقة "روبوت استشاري ذكي" لفتح صفحة الذكاء الاصطناعي
+        document.getElementById('cardAI').addEventListener('click', function() {
+            window.location.href = 'ai.html';
+        });
+
+        // 3. تفعيل بطاقة "لوحة تحكم تفاعلية" لتنبيه بـ Demo مستقبلي (ميزة متقدمة)
+        document.getElementById('cardDashboard').addEventListener('click', function() {
+            alert('⚙️ سيتم تفعيل لوحة التحكم الرسومية قريباً! يمكنك تجربة مختبر التحليل الذكي بالأسفل.');
+        });
+
+
+        // --- كود الذكاء الاصطناعي الأصلي (مع تفعيل الألوان في الرد) ---
+        async function generateAIInsights() {
+            const API_KEY = "AIzaSyBQEHaj_mJK6DLzH3PbcA1zlv2wBjbrmh8"; 
+            const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
             
-            if (data.candidates && data.candidates[0].content) {
-                const rawText = data.candidates[0].content.parts[0].text;
+            const sleep = document.getElementById('sleepInput').value;
+            const grades = document.getElementById('gradesInput').value;
+            const resultDiv = document.getElementById('ai-result');
+            const resultText = document.getElementById('ai-text');
+            const analyzeBtn = document.getElementById('analyzeBtn');
 
-              resultText.innerHTML = rawText.replace(/\n/g, '<br>').replace(/\*/g, '•');
-            } else {
-                throw new Error("لم نحصل على رد صحيح من الخادم.");
+            if(!sleep || !grades) {
+                alert("يرجى إدخال كافة البيانات أولاً");
+                return;
             }
-            
-        } catch (error) {
-            console.error(error);
-            resultText.innerHTML = "❌ عذراً، حدث خطأ في الاتصال. تأكد من أن الـ API Key يعمل بشكل صحيح.";
-        } finally {
-            analyzeBtn.disabled = false;
+
+            // تحضير الواجهة للتحميل
+            resultDiv.style.display = "block";
+            resultText.innerHTML = '<p class="loading">⏳ جاري استشارة الذكاء الاصطناعي وتحليل البيانات...</p>';
+            analyzeBtn.disabled = true;
+
+            const promptText = `أنت خبير في الصحة المدرسية والتحليل الأكاديمي. بيانات الطالب هي: ساعات النوم (${sleep}) والدرجات الأخيرة هي (${grades}). بناءً على ذلك قدم باللغة العربية وبأسلوب مشجع: 1- تحليل الحالة الصحية وتأثير النوم على التركيز. 2- التنبؤ بالأداء الدراسي القادم. استخدم نقاط واضحة.`;
+
+            try {
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{ text: promptText }]
+                        }]
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.candidates && data.candidates[0].content) {
+                    const rawText = data.candidates[0].content.parts[0].text;
+                    // --- تلوين الكلمات المهمة في الرد ---
+                    // تحويل النصوص التنسيقية لتبدو أجمل في HTML
+                    // استبدال النقاط الأساسية بألوان جميلة
+                    const boldText = rawText.replace(/\*/g, '').trim(); // إزالة النجوم أولاً
+                    const colorText = boldText.replace(/تحليل الحالة الصحية:/g, '<span class="result-highlight">تحليل الحالة الصحية:</span>')
+                                              .replace(/التنبؤ بالأداء:/g, '<span class="result-highlight">التنبؤ بالأداء الدراسي:</span>')
+                                              .replace(/التركيز/g, '<span class="result-highlight">التركيز</span>')
+                                              .replace(/النوم/g, '<span class="result-highlight">النوم</span>');
+                    
+                    resultText.innerHTML = colorText.replace(/\n/g, '<br>'); // إضافة كسر الأسطر
+                } else {
+                    throw new Error("لم نحصل على رد صحيح من الخادم.");
+                }
+                
+            } catch (error) {
+                console.error(error);
+                resultText.innerHTML = "❌ عذراً، حدث خطأ في الاتصال. تأكد من أن الـ API Key يعمل بشكل صحيح.";
+            } finally {
+                analyzeBtn.disabled = false;
+            }
         }
-    }
-  </script>
+    </script>
 </body>
 </html>
