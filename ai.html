@@ -43,8 +43,8 @@
 
   <script>
     async function askAI() {
-
-            const API_KEY = "AIzaSyBQEHaj_mJK6DLzH3PbcA1zlv2wBjbrmh8"; 
+      // تم وضع المفتاح الذي أرسلته هنا
+      const API_KEY = "AIzaSyBQEHaj_mJK6DLzH3PbcA1zlv2wBjbrmh8"; 
       const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
       
       const promptInput = document.getElementById('userPrompt');
@@ -78,12 +78,12 @@
             const aiResponse = data.candidates[0].content.parts[0].text;
             chatContent.innerHTML += `<div class="msg ai">${aiResponse.replace(/\n/g, '<br>')}</div>`;
         } else {
-            throw new Error("لم يتمكن الذكاء الاصطناعي من تكوين رد.");
+            throw new Error("حدث خطأ في البيانات المستلمة. قد يكون المفتاح غير مفعل.");
         }
 
       } catch (error) {
         console.error("Error:", error);
-        chatContent.innerHTML += `<div class="msg ai" style="color:red">عذراً، واجهت مشكلة في الاتصال بمحرك Gemini. تأكد من مفتاح الـ API.</div>`;
+        chatContent.innerHTML += `<div class="msg ai" style="color:red">فشل الاتصال: تأكد من تفعيل Gemini API لهذا المفتاح في Google AI Studio.</div>`;
       } finally {
         loading.style.display = 'none';
         sendBtn.disabled = false;
